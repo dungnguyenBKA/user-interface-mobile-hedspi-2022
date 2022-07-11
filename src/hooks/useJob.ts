@@ -6,20 +6,30 @@ export default function useJob() {
   const dispatch = useAppDispatch();
   const jobData = useAppSelector(state => state.job);
 
-  const doneJob = jobData.filter((_job) => {
-    return _job.status === "done";
+  const newJob = jobData.filter((_job) => {
+    return _job.status === "New";
   });
 
-  const todoJob = jobData.filter((_job) => {
-    return _job.status === "todo";
+  const submittedJob = jobData.filter((_job) => {
+    return _job.status === "Submitted";
+  });
+
+  const approvedJob = jobData.filter((_job) => {
+    return _job.status === "Approved";
+  });
+
+  const needToChangeJob = jobData.filter((_job) => {
+    return _job.status === "NeedToChange";
   });
 
   return {
     changeStatusJob: (job: Job) => {
       dispatch(changeStatus(job));
     },
-    doneJob,
-    todoJob,
+    newJob,
+    submittedJob,
+    approvedJob,
+    needToChangeJob,
     allJob: jobData
   };
 }

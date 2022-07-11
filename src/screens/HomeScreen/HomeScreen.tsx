@@ -9,10 +9,13 @@ import PressView from "../../components/PressView/PressView";
 import AppColors from "../../styles/AppColors";
 import JobItem from "../../components/JobItem/JobItem";
 import useJob from "../../hooks/useJob";
+import { Job } from "../../model/Job";
 
 type HomeTopTabParamList = {
-  DoneJobTab: undefined,
-  AssignJobTab: undefined,
+  NewJobTab: undefined,
+  ApprovedJobTab: undefined,
+  SubmittedJobTab: undefined,
+  NeedToChangeJobTab: undefined,
 };
 
 const Tab = createMaterialTopTabNavigator<HomeTopTabParamList>();
@@ -46,23 +49,42 @@ const HomeScreen: React.FC = () => {
     }}>
       <Tab.Screen
         options={{
-          title: "Công việc đã được phê duyệt",
-        }}
-        name="DoneJobTab"
-        component={DoneJobTab} />
-      <Tab.Screen
-        options={{
           title: "Công việc vừa được giao",
         }}
-        name="AssignJobTab"
-        component={TodoJobTab} />
+        name="NewJobTab"
+        component={NewJobTab} />
+
+      <Tab.Screen
+        options={{
+          title: "Công việc đã được phê duyệt",
+        }}
+        name="ApprovedJobTab"
+        component={ApprovedJobTab} />
+
+      <Tab.Screen
+        options={{
+          title: "Đã nộp minh chứng",
+        }}
+        name="SubmittedJobTab"
+        component={SubmittedJobTab} />
+
+      <Tab.Screen
+        options={{
+          title: "Cần thay đổi",
+        }}
+        name="NeedToChangeJobTab"
+        component={NeedToChangeTab} />
     </Tab.Navigator>
   </SafeAreaView>;
 };
 
 
-const DoneJobTab: React.FC = () => {
-  const { doneJob } = useJob();
+interface BaseJobTabProps {
+  jobs: Job[];
+}
+
+const BaseJobTab: React.FC<BaseJobTabProps> = (props) => {
+  const { jobs } = props;
   return <View style={AppStyles.container}>
     <FlatList
       ItemSeparatorComponent={() => <View style={{ height: unit16 }} />}
@@ -71,29 +93,31 @@ const DoneJobTab: React.FC = () => {
         paddingVertical: unit20,
         backgroundColor: AppColors.color_background_3,
       }}
-      data={doneJob}
+      data={jobs}
       renderItem={({ item }) => {
         return <JobItem job={item} />;
       }} />
   </View>;
 };
 
-const TodoJobTab: React.FC = () => {
-  const { todoJob } = useJob();
-  return <View style={AppStyles.container}>
-    <FlatList
-      ItemSeparatorComponent={() => <View style={{ height: unit16 }} />}
-      contentContainerStyle={{
-        paddingHorizontal: unit16,
-        paddingVertical: unit20,
-        backgroundColor: AppColors.color_background_3,
-      }}
-      data={todoJob}
-      renderItem={({ item }) => {
-        return <JobItem job={item} />;
-      }} />
-  </View>;
+const ApprovedJobTab: React.FC = () => {
+  const { approvedJob } = useJob();
+  return <BaseJobTab jobs={approvedJob} />;
 };
 
+const NewJobTab: React.FC = () => {
+  const { newJob } = useJob();
+  return <BaseJobTab jobs={newJob} />;
+};
+
+const SubmittedJobTab: React.FC = () => {
+  const { submittedJob } = useJob();
+  return <BaseJobTab jobs={submittedJob} />;
+};
+
+const NeedToChangeTab: React.FC = () => {
+  const { needToChangeJob } = useJob();
+  return <BaseJobTab jobs={needToChangeJob} />;
+};
 
 export default HomeScreen;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Job } from "../../model/Job";
+import { getStatusFromJob, Job } from "../../model/Job";
 import AppText from "../AppText/AppText";
 import { unit12, unit13, unit16 } from "../../utils/appUnit";
 import AppColors from "../../styles/AppColors";
@@ -17,10 +17,10 @@ const JobItem: React.FC<JobItemProps> = (props) => {
   const { changeStatusJob } = useJob();
   return <PressView
     onPress={() => {
-      if (job.status === "done") {
+      if (job.status === "Submitted") {
         changeStatusJob({
           ...job,
-          status: "todo",
+          status: "New",
         });
         showToastMsg("Đã hoàn tác lại công việc " + job.name);
       } else {
@@ -46,9 +46,11 @@ const JobItem: React.FC<JobItemProps> = (props) => {
     <AppText
       fontType={"medium"}
       style={{
-        color: job.status === "todo" ? AppColors.color_E6361F : AppColors.color_18DC18,
+        color: job.status === "New" ? AppColors.color_18DC18: AppColors.color_E6361F,
       }}>
-      {job.status === "done" ? "Đã duyệt" : "Đang chờ duyệt"}
+      {
+        getStatusFromJob(job)
+      }
     </AppText>
   </PressView>;
 };
